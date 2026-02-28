@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EcoTrack | Dashboard</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">EcoTrack <span>🌍</span></div>
+    <div class="nav-actions">
+      <span class="user-pill">Hi, <strong id="userName">User</strong></span>
+      <button id="darkModeToggle" class="btn btn-outline" type="button">🌙 Dark Mode</button>
+      <button id="logoutBtn" class="btn btn-danger" type="button">Logout</button>
+    </div>
+  </header>
+
+  <main class="dashboard-container">
+    <section class="card animate-fade-up">
+      <h2>Emission Input</h2>
+      <form id="emissionForm" class="emission-form" novalidate>
+        <div class="input-group">
+          <label for="vehicleDistance">Monthly vehicle distance (km)</label>
+          <input id="vehicleDistance" name="vehicleDistance" type="number" min="0" step="0.01" required />
+        </div>
+        <div class="input-group">
+          <label for="electricityUsage">Electricity usage (kWh)</label>
+          <input id="electricityUsage" name="electricityUsage" type="number" min="0" step="0.01" required />
+        </div>
+        <div class="input-group">
+          <label for="lpgUsage">LPG usage (kg)</label>
+          <input id="lpgUsage" name="lpgUsage" type="number" min="0" step="0.01" required />
+        </div>
+        <div class="input-group">
+          <label for="flightDistance">Flight distance (km)</label>
+          <input id="flightDistance" name="flightDistance" type="number" min="0" step="0.01" required />
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary" type="submit">Calculate & Save</button>
+          <p id="formMessage" class="inline-success" aria-live="polite"></p>
+        </div>
+      </form>
+    </section>
+
+    <section class="stats-grid" id="statsGrid">
+      <article class="stat-card"><h3>Total CO₂</h3><p id="totalEmission">0 kg</p></article>
+      <article class="stat-card"><h3>Transport Emission</h3><p id="transportEmission">0 kg</p></article>
+      <article class="stat-card"><h3>Electricity Emission</h3><p id="electricityEmission">0 kg</p></article>
+      <article class="stat-card"><h3>LPG Emission</h3><p id="lpgEmission">0 kg</p></article>
+      <article class="stat-card"><h3>Flight Emission</h3><p id="flightEmission">0 kg</p></article>
+    </section>
+
+    <section class="charts-grid">
+      <article class="card chart-card animate-fade-up">
+        <h2>Emission Breakdown</h2>
+        <div class="chart-wrap"><canvas id="emissionPieChart"></canvas></div>
+      </article>
+
+      <article class="card chart-card animate-fade-up delay-1">
+        <div class="card-head">
+          <h2>Monthly Emission Trend</h2>
+          <button id="downloadCsvBtn" class="btn btn-outline" type="button">Download CSV</button>
+        </div>
+        <div class="chart-wrap"><canvas id="emissionLineChart"></canvas></div>
+      </article>
+    </section>
+
+    <section class="card animate-fade-up delay-2">
+      <h2>Smart Suggestions</h2>
+      <div id="suggestionsPanel" class="suggestions-grid"></div>
+    </section>
+  </main>
+
+  <div id="loadingOverlay" class="loading-overlay hidden" aria-hidden="true">
+    <div class="spinner"></div>
+  </div>
+
+  <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
