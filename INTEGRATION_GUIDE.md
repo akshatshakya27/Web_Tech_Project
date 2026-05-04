@@ -107,53 +107,15 @@ uvicorn app.main:app --reload
 Server runs on: `http://localhost:8000`
 
 ### Frontend (HTML/JS)
+**Production Deployment:**
+When deploying to Vercel, Netlify, or similar:
+- The frontend automatically connects to the deployed backend at `https://web-tech-project-sage.vercel.app`
+- No configuration changes needed if `frontend/js/api.js` is updated
 
-#### Configuration for Deployment
-
-The frontend uses `frontend/js/config.js` to set the backend API URL via environment variables.
-
-**Local Development (Default):**
-- The config defaults to `http://localhost:8000`
-- Open `d:\Webtech\frontend\index.html` in a browser
-- Ensure backend is running on `http://localhost:8000`
-
-**Vercel Deployment:**
-
-1. **Connect your GitHub repo to Vercel:**
-   - Go to https://vercel.com
-   - Import your repository
-   - Select `d:\Webtech` as the root directory (or use default)
-
-2. **Set the Environment Variable:**
-   - In Vercel project settings, go to **Settings → Environment Variables**
-   - Add a new environment variable:
-     - **Name:** `API_BASE_URL`
-     - **Value:** `https://web-tech-project-sage.vercel.app` (or your backend URL)
-     - **Environments:** Production, Preview, Development (select all)
-   - Click "Save"
-
-3. **Configure Build:**
-   - Vercel will automatically run `node build.js` (defined in `vercel.json`)
-   - The build script replaces `{{API_BASE_URL}}` in `frontend/js/config.js` with your environment variable
-   - Output directory is set to `frontend/`
-
-4. **Deploy:**
-   - Click "Deploy"
-   - Vercel will build and deploy your frontend
-   - The frontend will connect to your backend using the environment variable value
-
-**Example Vercel Configuration:**
-```json
-{
-  "buildCommand": "node build.js",
-  "outputDirectory": "frontend"
-}
-```
-
-**How It Works:**
-1. You set `API_BASE_URL` in Vercel's environment variables UI
-2. During build, the `build.js` script reads `API_BASE_URL` and replaces `{{API_BASE_URL}}` in `config.js`
-3. The deployed frontend connects to your backend using the injected URL
+**Local Development:**
+Open `d:\Webtech\frontend\index.html` in a browser
+- Login: Use any registered user credentials
+- Dashboard: View and track emissions
 
 ## API Endpoints
 
