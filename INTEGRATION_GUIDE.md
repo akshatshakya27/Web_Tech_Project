@@ -43,7 +43,7 @@ A centralized API module that provides:
 - `showToast()` - Displays notifications
 - `logout()` - Clears token and redirects to login
 
-**Base URL:** `http://localhost:8000`
+**Base URL:** `https://web-tech-project-sage.vercel.app` (Production) or `http://localhost:8000` (Local Development)
 
 ### 2. Updated FastAPI Backend
 
@@ -94,6 +94,11 @@ A centralized API module that provides:
 ## How to Run
 
 ### Backend (FastAPI)
+**Production (Already Deployed):**
+- URL: `https://web-tech-project-sage.vercel.app`
+- No action needed — backend is live on Vercel
+
+**Local Development:**
 ```powershell
 cd d:\Webtech\backend
 python -m pip install -r requirements.txt  # if not already installed
@@ -102,6 +107,12 @@ uvicorn app.main:app --reload
 Server runs on: `http://localhost:8000`
 
 ### Frontend (HTML/JS)
+**Production Deployment:**
+When deploying to Vercel, Netlify, or similar:
+- The frontend automatically connects to the deployed backend at `https://web-tech-project-sage.vercel.app`
+- No configuration changes needed if `frontend/js/api.js` is updated
+
+**Local Development:**
 Open `d:\Webtech\frontend\index.html` in a browser
 - Login: Use any registered user credentials
 - Dashboard: View and track emissions

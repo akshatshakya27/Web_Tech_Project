@@ -5,7 +5,7 @@
 
 window.EcoAPI = (() => {
   // Configuration
-  const API_BASE_URL = "http://localhost:8000"; // FastAPI backend URL
+  const API_BASE_URL = "https://web-tech-project-sage.vercel.app"; // FastAPI backend URL
   const TOKEN_KEY = "ecotrack_token";
   const THEME_KEY = "ecotrack_theme";
   const LOADING_OVERLAY_ID = "loadingOverlay";
