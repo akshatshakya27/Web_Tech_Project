@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EcoTrack | Enterprise Environmental Monitoring</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="auth-body">
+  <button id="darkModeToggle" class="btn btn-outline theme-fab" type="button"><i class="ph ph-moon"></i> Toggle Theme</button>
+
+  <main class="auth-wrapper">
+    <section class="auth-card animate-fade-up">
+      <div class="brand-block">
+        <h1>EcoTrack <i class="ph ph-leaf"></i></h1>
+        <p>Enterprise footprint monitoring and analysis.</p>
+      </div>
+
+      <div class="form-switcher">
+        <button id="showLoginBtn" class="switch-btn active" type="button">Login</button>
+        <button id="showRegisterBtn" class="switch-btn" type="button">Register</button>
+      </div>
+
+      <p id="authError" class="inline-error" aria-live="polite"></p>
+
+      <form id="loginForm" class="auth-form" novalidate>
+        <div class="input-group">
+          <label for="loginEmail">Email Address</label>
+          <div class="input-wrapper">
+            <span class="input-icon"><i class="ph ph-envelope-simple"></i></span>
+            <input id="loginEmail" name="email" type="email" placeholder="user@company.com" required />
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="loginPassword">Password</label>
+          <div class="password-input input-wrapper">
+            <span class="input-icon"><i class="ph ph-lock-key"></i></span>
+            <input id="loginPassword" name="password" type="password" placeholder="Enter credentials" required />
+            <button class="password-toggle" type="button" data-target="loginPassword" aria-label="Show password"><i class="ph ph-eye"></i></button>
+          </div>
+        </div>
+
+        <button id="loginBtn" class="btn btn-primary" type="submit">Authenticate</button>
+
+        <p class="switch-text">No account? <button id="toRegisterInline" type="button" class="link-btn">Create one</button></p>
+      </form>
+
+      <form id="registerForm" class="auth-form hidden" novalidate>
+        <div class="input-group">
+          <label for="registerName">Full Name</label>
+          <div class="input-wrapper">
+            <span class="input-icon"><i class="ph ph-user"></i></span>
+            <input id="registerName" name="name" type="text" placeholder="John Doe" required />
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="registerEmail">Email Address</label>
+          <div class="input-wrapper">
+            <span class="input-icon"><i class="ph ph-envelope-simple"></i></span>
+            <input id="registerEmail" name="email" type="email" placeholder="user@company.com" required />
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="registerPassword">Password</label>
+          <div class="password-input input-wrapper">
+            <span class="input-icon"><i class="ph ph-lock-key"></i></span>
+            <input id="registerPassword" name="password" type="password" placeholder="Min 8 characters" required />
+            <button class="password-toggle" type="button" data-target="registerPassword" aria-label="Show password"><i class="ph ph-eye"></i></button>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <div class="password-input input-wrapper">
+            <span class="input-icon"><i class="ph ph-lock-key"></i></span>
+            <input id="confirmPassword" name="confirmPassword" type="password" placeholder="Confirm credentials" required />
+            <button class="password-toggle" type="button" data-target="confirmPassword" aria-label="Show password"><i class="ph ph-eye"></i></button>
+          </div>
+        </div>
+
+        <button id="registerBtn" class="btn btn-primary" type="submit">Register Account</button>
+
+        <p class="switch-text">Already registered? <button id="toLoginInline" type="button" class="link-btn">Sign in</button></p>
+      </form>
+    </section>
+  </main>
+
+  <div id="loadingOverlay" class="loading-overlay hidden" aria-hidden="true">
+    <div class="spinner"></div>
+  </div>
+
+  <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

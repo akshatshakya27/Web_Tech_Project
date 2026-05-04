@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EcoTrack | Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="dashboard-body">
+
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">EcoTrack <i class="ph ph-leaf"></i></div>
+      </div>
+      <div class="user-profile">
+        <div class="avatar"><i class="ph ph-user"></i></div>
+        <div class="user-info">
+          <span class="user-greeting">Welcome back,</span>
+          <strong id="userName">User</strong>
+        </div>
+      </div>
+      <div id="ecoBadgeContainer" class="eco-badge hidden">
+        <!-- Filled by JS -->
+      </div>
+      <div class="sidebar-actions">
+        <button id="darkModeToggle" class="btn btn-outline btn-full" type="button"><i class="ph ph-moon"></i> Toggle Theme</button>
+        <button id="logoutBtn" class="btn btn-danger btn-full" type="button"><i class="ph ph-sign-out"></i> Sign Out</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="dashboard-container">
+        
+        <div class="top-row-grid">
+          <section class="card animate-fade-up">
+            <div class="card-header-flex">
+              <h2>Data Entry</h2>
+            </div>
+            <form id="emissionForm" class="emission-form" novalidate>
+              <div class="input-group">
+                <label for="vehicleDistance">Vehicle Distance (km)</label>
+                <div class="input-wrapper">
+                  <span class="input-icon"><i class="ph ph-car-profile"></i></span>
+                  <input id="vehicleDistance" name="vehicleDistance" type="number" min="0" step="0.01" placeholder="e.g. 500" required />
+                </div>
+                <small class="helper-text">Estimate based on monthly odometer.</small>
+              </div>
+              <div class="input-group">
+                <label for="electricityUsage">Electricity Usage (kWh)</label>
+                <div class="input-wrapper">
+                  <span class="input-icon"><i class="ph ph-lightning"></i></span>
+                  <input id="electricityUsage" name="electricityUsage" type="number" min="0" step="0.01" placeholder="e.g. 150" required />
+                </div>
+                <small class="helper-text">Check your monthly utility bill.</small>
+              </div>
+              <div class="input-group">
+                <label for="lpgUsage">LPG Usage (kg)</label>
+                <div class="input-wrapper">
+                  <span class="input-icon"><i class="ph ph-cooking-pot"></i></span>
+                  <input id="lpgUsage" name="lpgUsage" type="number" min="0" step="0.01" placeholder="e.g. 14" required />
+                </div>
+                <small class="helper-text">Standard cylinder is ~14.2 kg.</small>
+              </div>
+              <div class="input-group">
+                <label for="flightDistance">Flight Distance (km)</label>
+                <div class="input-wrapper">
+                  <span class="input-icon"><i class="ph ph-airplane-tilt"></i></span>
+                  <input id="flightDistance" name="flightDistance" type="number" min="0" step="0.01" placeholder="e.g. 0" required />
+                </div>
+                <small class="helper-text">Total distance of flights taken.</small>
+              </div>
+              <div class="input-group">
+                <label for="emissionMonth">Month</label>
+                <div class="input-wrapper">
+                  <span class="input-icon"><i class="ph ph-calendar-blank"></i></span>
+                  <input id="emissionMonth" name="month" type="month" required />
+                </div>
+              </div>
+              <div class="form-actions">
+                <button class="btn btn-primary" type="submit">Calculate & Save</button>
+                <p id="formMessage" class="inline-success" aria-live="polite"></p>
+              </div>
+            </form>
+          </section>
+
+          <section class="card animate-fade-up delay-1">
+            <div class="card-header-flex">
+              <h2>Smart Suggestions</h2>
+            </div>
+            <div id="suggestionsPanel" class="suggestions-grid"></div>
+          </section>
+        </div>
+
+        <section class="stats-grid" id="statsGrid">
+          <article class="stat-card card animate-fade-up delay-2">
+            <div class="stat-header">
+              <i class="ph ph-globe-hemisphere-east stat-icon"></i>
+              <h3>Total CO₂</h3>
+            </div>
+            <div class="stat-content">
+              <p id="totalEmission">0 kg</p>
+            </div>
+          </article>
+          <article class="stat-card card animate-fade-up delay-2">
+            <div class="stat-header">
+              <i class="ph ph-car-profile stat-icon"></i>
+              <h3>Transport</h3>
+            </div>
+            <div class="stat-content">
+              <p id="transportEmission">0 kg</p>
+            </div>
+          </article>
+          <article class="stat-card card animate-fade-up delay-2">
+            <div class="stat-header">
+              <i class="ph ph-lightning stat-icon"></i>
+              <h3>Electricity</h3>
+            </div>
+            <div class="stat-content">
+              <p id="electricityEmission">0 kg</p>
+            </div>
+          </article>
+          <article class="stat-card card animate-fade-up delay-2">
+            <div class="stat-header">
+              <i class="ph ph-cooking-pot stat-icon"></i>
+              <h3>LPG</h3>
+            </div>
+            <div class="stat-content">
+              <p id="lpgEmission">0 kg</p>
+            </div>
+          </article>
+          <article class="stat-card card animate-fade-up delay-2">
+            <div class="stat-header">
+              <i class="ph ph-airplane-tilt stat-icon"></i>
+              <h3>Flight</h3>
+            </div>
+            <div class="stat-content">
+              <p id="flightEmission">0 kg</p>
+            </div>
+          </article>
+        </section>
+
+        <section class="charts-grid">
+          <article class="card chart-card animate-fade-up delay-3">
+            <div class="card-head">
+              <h2>Emission Breakdown</h2>
+            </div>
+            <div class="chart-wrap"><canvas id="emissionPieChart"></canvas></div>
+          </article>
+
+          <article class="card chart-card animate-fade-up delay-3">
+            <div class="card-head">
+              <h2>Historical Trend</h2>
+              <button id="downloadCsvBtn" class="btn btn-outline" type="button"><i class="ph ph-download-simple"></i> Export CSV</button>
+            </div>
+            <div class="chart-wrap"><canvas id="emissionLineChart"></canvas></div>
+          </article>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <div id="loadingOverlay" class="loading-overlay hidden" aria-hidden="true">
+    <div class="spinner"></div>
+  </div>
+
+  <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
