@@ -133,7 +133,7 @@ The frontend uses `frontend/js/config.js` to set the backend API URL via environ
    - Click "Save"
 
 3. **Configure Build:**
-   - Vercel will automatically run `build.sh` (defined in `vercel.json`)
+   - Vercel will automatically run `node build.js` (defined in `vercel.json`)
    - The build script replaces `{{API_BASE_URL}}` in `frontend/js/config.js` with your environment variable
    - Output directory is set to `frontend/`
 
@@ -145,17 +145,14 @@ The frontend uses `frontend/js/config.js` to set the backend API URL via environ
 **Example Vercel Configuration:**
 ```json
 {
-  "buildCommand": "bash build.sh",
-  "outputDirectory": "frontend",
-  "env": {
-    "API_BASE_URL": "@api_base_url"
-  }
+  "buildCommand": "node build.js",
+  "outputDirectory": "frontend"
 }
 ```
 
 **How It Works:**
 1. You set `API_BASE_URL` in Vercel's environment variables UI
-2. During build, the `build.sh` script reads `API_BASE_URL` and replaces `{{API_BASE_URL}}` in `config.js`
+2. During build, the `build.js` script reads `API_BASE_URL` and replaces `{{API_BASE_URL}}` in `config.js`
 3. The deployed frontend connects to your backend using the injected URL
 
 ## API Endpoints

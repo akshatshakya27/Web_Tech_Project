@@ -1,4 +1,4 @@
 {
-  "buildCommand": "bash build.sh",
+  "buildCommand": "node build.js",
   "outputDirectory": "frontend"
 }
