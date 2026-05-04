@@ -3,6 +3,6 @@ uvicorn
 pymongo
 python-dotenv
 pyjwt
-passlib[bcrypt]
+passlib
 email-validator
 dnspython

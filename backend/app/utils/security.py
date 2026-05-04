@@ -18,7 +18,9 @@ if not SECRET_KEY:
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+ # Use PBKDF2-SHA256 to avoid external bcrypt backend issues in some environments.
+ # PBKDF2-SHA256 is secure and available via passlib without external C extensions.
+pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 
 def hash_password(password: str) -> str:
