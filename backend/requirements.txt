@@ -4,3 +4,5 @@ pymongo
 python-dotenv
 pyjwt
 passlib[bcrypt]
+email-validator
+dnspython
