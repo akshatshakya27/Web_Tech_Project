@@ -108,62 +108,55 @@ Server runs on: `http://localhost:8000`
 
 ### Frontend (HTML/JS)
 
-#### Configuration via Environment Variables
-The frontend uses `frontend/js/config.js` to set the backend API URL. You can configure it per environment:
+#### Configuration for Deployment
 
-**Option 1: Default (Local Development)**
-By default, the frontend connects to `http://localhost:8000`:
-```javascript
-// frontend/js/config.js
-window.ECOTRACK_CONFIG = {
-  API_BASE_URL: "http://localhost:8000"
-};
-```
+The frontend uses `frontend/js/config.js` to set the backend API URL via environment variables.
 
-**Option 2: Set via HTML Script Tag (Recommended for Deployments)**
-Before deploying, inject the config in your HTML:
-```html
-<!-- In index.html or dashboard.html, before loading config.js -->
-<script>
-  window.ECOTRACK_CONFIG = {
-    API_BASE_URL: "https://web-tech-project-sage.vercel.app"
-  };
-</script>
-<script src="js/config.js"></script>
-<script src="js/api.js"></script>
-```
-
-**Option 3: Environment-based Configuration (Vercel, Netlify, etc.)**
-Use build environment variables and a script to inject them:
-
-For **Vercel**:
-1. Set environment variable: `REACT_APP_API_BASE_URL=https://web-tech-project-sage.vercel.app`
-2. Add a build script to inject the variable into HTML before deployment
-
-For **Netlify**:
-1. Set build environment variable: `API_BASE_URL=https://web-tech-project-sage.vercel.app`
-2. Use a Netlify plugin or build script to inject it
-
-**Option 4: Runtime Configuration File**
-Create a `config.json` and fetch it at runtime:
-```javascript
-// In api.js, fetch config at startup
-fetch('config.json')
-  .then(r => r.json())
-  .then(cfg => { window.ECOTRACK_CONFIG = cfg; });
-```
-
-#### Local Development
-Open `d:\Webtech\frontend\index.html` in a browser
+**Local Development (Default):**
+- The config defaults to `http://localhost:8000`
+- Open `d:\Webtech\frontend\index.html` in a browser
 - Ensure backend is running on `http://localhost:8000`
-- Login: Use any registered user credentials
-- Dashboard: View and track emissions
 
-#### Production Deployment
-When deploying to Vercel, Netlify, or similar:
-1. Update `frontend/js/config.js` or inject via script tag with the deployed backend URL
-2. The frontend automatically connects to the configured backend
-3. No other changes needed
+**Vercel Deployment:**
+
+1. **Connect your GitHub repo to Vercel:**
+   - Go to https://vercel.com
+   - Import your repository
+   - Select `d:\Webtech` as the root directory (or use default)
+
+2. **Set the Environment Variable:**
+   - In Vercel project settings, go to **Settings → Environment Variables**
+   - Add a new environment variable:
+     - **Name:** `API_BASE_URL`
+     - **Value:** `https://web-tech-project-sage.vercel.app` (or your backend URL)
+     - **Environments:** Production, Preview, Development (select all)
+   - Click "Save"
+
+3. **Configure Build:**
+   - Vercel will automatically run `build.sh` (defined in `vercel.json`)
+   - The build script replaces `{{API_BASE_URL}}` in `frontend/js/config.js` with your environment variable
+   - Output directory is set to `frontend/`
+
+4. **Deploy:**
+   - Click "Deploy"
+   - Vercel will build and deploy your frontend
+   - The frontend will connect to your backend using the environment variable value
+
+**Example Vercel Configuration:**
+```json
+{
+  "buildCommand": "bash build.sh",
+  "outputDirectory": "frontend",
+  "env": {
+    "API_BASE_URL": "@api_base_url"
+  }
+}
+```
+
+**How It Works:**
+1. You set `API_BASE_URL` in Vercel's environment variables UI
+2. During build, the `build.sh` script reads `API_BASE_URL` and replaces `{{API_BASE_URL}}` in `config.js`
+3. The deployed frontend connects to your backend using the injected URL
 
 ## API Endpoints
 
