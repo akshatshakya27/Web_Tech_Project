@@ -131,9 +131,12 @@ Open `d:\Webtech\frontend\index.html` in a browser
 ## Environment Configuration
 
 Backend uses `.env` file at `d:\Webtech\backend\.env`:
+Backend uses a local `.env` file at `d:\Webtech\backend\.env`. This file is NOT tracked by git for security — create it from `.env.example`:
 - `MONGO_URI` - MongoDB connection string
 - `JWT_SECRET` - Secret key for JWT tokens
 - `OPENAI_API_KEY` - For AI suggestions (optional)
+
+Note: Sensitive values were removed from the repository history and `backend/.env` is ignored by `.gitignore`. Do NOT commit secrets to the repo.
 
 Frontend has hardcoded API URL in `frontend/js/api.js`:
 ```javascript
