@@ -1,0 +1,7 @@
+
+# Ignore local env files
+backend/.env
+
+# Python cache artifacts
+**/__pycache__/
+**/*.pyc

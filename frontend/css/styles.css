@@ -1,8 +1,11 @@
 :root {
   --primary: #047857; /* Emerald 700 */
   --primary-hover: #065f46; /* Emerald 800 */
+  --accent: #0f766e; /* Teal 700 */
+  --accent-soft: rgba(15, 118, 110, 0.12);
   --secondary: #0f172a; /* Slate 900 */
   --background: #f8fafc; /* Slate 50 */
+  --page-bg: linear-gradient(180deg, #ecfdf5 0%, #f8fafc 52%, #f0fdf4 100%);
   --surface: #ffffff;
   --border: #e2e8f0; /* Slate 200 */
   --text: #1e293b; /* Slate 800 */
@@ -18,6 +21,9 @@
 
 body.dark {
   --background: #0f172a; /* Slate 900 */
+  --page-bg: linear-gradient(180deg, #052e16 0%, #0f172a 58%, #064e3b 100%);
+  --accent: #2dd4bf; /* Teal 400 */
+  --accent-soft: rgba(45, 212, 191, 0.14);
   --surface: #1e293b; /* Slate 800 */
   --border: #334155; /* Slate 700 */
   --text: #f8fafc; /* Slate 50 */
@@ -35,7 +41,7 @@ html, body {
   margin: 0;
   padding: 0;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: var(--background);
+  background: var(--page-bg);
   color: var(--text);
   min-height: 100vh;
   line-height: 1.5;
@@ -53,21 +59,32 @@ h1, h2, h3, h4, h5, p {
   justify-content: center;
   min-height: 100vh;
   padding: 2rem;
-  background-color: var(--background);
-  background-image: radial-gradient(var(--border) 1px, transparent 1px);
+  background-color: transparent;
+  background-image: radial-gradient(rgba(4, 120, 87, 0.12) 1px, transparent 1px);
   background-size: 24px 24px;
+}
+
+body.dark .auth-body {
+  background-image: radial-gradient(rgba(16, 185, 129, 0.12) 1px, transparent 1px);
+}
+
+.dashboard-body {
+  background-color: transparent;
+  background-image:
+    radial-gradient(circle at top left, rgba(4, 120, 87, 0.14), transparent 34%),
+    radial-gradient(circle at bottom right, rgba(16, 185, 129, 0.08), transparent 28%);
+  background-attachment: fixed;
+}
+
+body.dark .dashboard-body {
+  background-image:
+    radial-gradient(circle at top left, rgba(16, 185, 129, 0.12), transparent 34%),
+    radial-gradient(circle at bottom right, rgba(4, 120, 87, 0.12), transparent 28%);
 }
 
 .auth-wrapper {
   width: 100%;
   max-width: 420px;
-}
-
-.theme-fab {
-  position: fixed;
-  top: 1.5rem;
-  right: 1.5rem;
-  z-index: 20;
 }
 
 .card, .auth-card {
@@ -102,6 +119,36 @@ body.dark .brand-block h1 {
   color: var(--primary);
 }
 
+.card h2,
+.stat-content p,
+.suggestion-card h4,
+.eco-badge,
+.brand-block h1 {
+  letter-spacing: -0.02em;
+}
+
+.card h2 {
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.card h2::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+  flex: 0 0 auto;
+}
+
+.stat-header h3 {
+  color: var(--accent);
+  font-weight: 600;
+}
+
 .brand-block p {
   margin-top: 0.5rem;
   color: var(--text-muted);
@@ -131,10 +178,19 @@ body.dark .brand-block h1 {
   transition: var(--transition);
 }
 
+.switch-btn:hover {
+  color: var(--primary);
+}
+
 .switch-btn.active {
-  background: var(--surface);
-  color: var(--text);
-  box-shadow: var(--shadow-sm);
+  background: var(--primary);
+  color: #ffffff;
+  box-shadow: 0 6px 14px rgba(4, 120, 87, 0.18);
+}
+
+.switch-btn.active:hover {
+  background: var(--primary-hover);
+  color: #ffffff;
 }
 
 /* Forms */
@@ -156,10 +212,16 @@ body.dark .brand-block h1 {
   gap: 0.375rem;
 }
 
+.input-group label,
+.card-head h2,
+.card-header-flex h2 {
+  color: var(--accent);
+}
+
 label {
   font-weight: 500;
   font-size: 0.875rem;
-  color: var(--text);
+  color: var(--accent);
 }
 
 .input-wrapper {
@@ -444,7 +506,7 @@ body.dark .eco-badge.good { color: #34d399; }
   display: grid;
   grid-template-columns: 3fr 2fr;
   gap: 1.5rem;
-  align-items: start;
+  align-items: stretch;
 }
 
 .card-header-flex {
@@ -459,7 +521,20 @@ body.dark .eco-badge.good { color: #34d399; }
 .card h2 {
   font-size: 1.125rem;
   font-weight: 600;
-  color: var(--text);
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.card h2::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+  flex: 0 0 auto;
 }
 
 .form-actions {
@@ -502,7 +577,7 @@ body.dark .eco-badge.good { color: #34d399; }
 .stat-content p {
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--text);
+  color: var(--primary);
   margin-top: 0.25rem;
 }
 
@@ -512,9 +587,24 @@ body.dark .eco-badge.good { color: #34d399; }
   gap: 1.5rem;
 }
 
+.top-row-grid > .card {
+  display: flex;
+  flex-direction: column;
+}
+
+.top-row-grid > .card .suggestions-grid {
+  flex: 1;
+  max-height: 340px;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+  margin-right: -0.25rem;
+  scrollbar-gutter: stable;
+}
+
 .chart-card {
   display: flex;
   flex-direction: column;
+  min-height: 420px;
 }
 
 .chart-card .card-head {
@@ -535,6 +625,7 @@ body.dark .eco-badge.good { color: #34d399; }
 .chart-wrap {
   position: relative;
   width: 100%;
+  min-height: 280px;
   height: 280px;
   flex: 1;
 }
@@ -545,12 +636,41 @@ body.dark .eco-badge.good { color: #34d399; }
   gap: 1rem;
 }
 
+.suggestions-grid::-webkit-scrollbar {
+  width: 8px;
+}
+
+.suggestions-grid::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.suggestions-grid::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.35);
+  border-radius: 999px;
+}
+
+.suggestions-grid::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.55);
+}
+
 .suggestion-card {
-  background: var(--background);
+  background: var(--surface);
   border: 1px solid var(--border);
   border-left: 3px solid var(--primary);
   border-radius: var(--radius);
   padding: 1rem;
+}
+
+.suggestion-card.priority-high {
+  border-left-color: var(--primary);
+}
+
+.suggestion-card.priority-medium {
+  border-left-color: var(--primary);
+}
+
+.suggestion-card.priority-low {
+  border-left-color: var(--primary);
 }
 
 .suggestion-card h4 {
@@ -563,10 +683,35 @@ body.dark .eco-badge.good { color: #34d399; }
   gap: 0.5rem;
 }
 
+.priority-label {
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.priority-label.priority-high {
+  color: var(--danger);
+}
+
+.priority-label.priority-medium {
+  color: var(--warning);
+}
+
+.priority-label.priority-low {
+  color: var(--success);
+}
+
 .suggestion-card p {
   color: var(--text-muted);
   font-size: 0.875rem;
   line-height: 1.5;
+}
+
+.inline-success {
+  color: var(--primary);
+}
+
+.inline-error {
+  color: var(--danger);
 }
 
 /* Loaders & Toasts */

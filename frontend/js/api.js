@@ -5,9 +5,9 @@
 
 window.EcoAPI = (() => {
   // Configuration
-  const API_BASE_URL = "https://web-tech-project-sage.vercel.app"; // FastAPI backend URL
+  // Set the backend URL in js/config.js before deploying the frontend.
+  const API_BASE_URL = window.EcoTrackConfig?.API_BASE_URL || "http://localhost:8000";
   const TOKEN_KEY = "ecotrack_token";
-  const THEME_KEY = "ecotrack_theme";
   const LOADING_OVERLAY_ID = "loadingOverlay";
   const TOAST_CONTAINER_ID = "toastContainer";
 
@@ -88,27 +88,6 @@ window.EcoAPI = (() => {
   }
 
   // =====================
-  // Theme Management
-  // =====================
-
-  function applySavedTheme() {
-    const savedTheme = localStorage.getItem(THEME_KEY) || "light";
-    const isDark = savedTheme === "dark";
-
-    if (isDark) {
-      document.body.classList.add("dark");
-    } else {
-      document.body.classList.remove("dark");
-    }
-  }
-
-  function toggleTheme() {
-    const isDark = document.body.classList.toggle("dark");
-    localStorage.setItem(THEME_KEY, isDark ? "dark" : "light");
-    return isDark;
-  }
-
-  // =====================
   // Loading Indicator
   // =====================
 
@@ -175,8 +154,6 @@ window.EcoAPI = (() => {
     removeToken: clearToken,  // Alias for compatibility
     parseJwtPayload,
     authorizedFetch,
-    applySavedTheme,
-    toggleTheme,
     setLoading,
     showToast,
     logout,

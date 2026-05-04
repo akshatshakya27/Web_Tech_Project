@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import JSONResponse
 from app.config.db import users_collection
 from app.models.user import UserCreate, UserLogin
 from app.utils.security import hash_password, verify_password, create_access_token
@@ -13,7 +14,10 @@ def register(user: UserCreate):
     try:
         existing_user = users_collection.find_one({"email": user.email})
         if existing_user:
-            raise HTTPException(status_code=400, detail="Email already registered")
+            return JSONResponse(
+                status_code=400,
+                content={"message": "Email already registered"}
+            )
 
         hashed_password = hash_password(user.password)
 
@@ -28,7 +32,10 @@ def register(user: UserCreate):
         return {"message": "User registered successfully"}
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        return JSONResponse(
+            status_code=500,
+            content={"message": f"Registration error: {str(e)}"}
+        )
 
 
 # 🔐 LOGIN
@@ -39,10 +46,16 @@ def login(user: UserLogin):
         db_user = users_collection.find_one({"email": user.email})
 
         if not db_user:
-            raise HTTPException(status_code=400, detail="Invalid email or password")
+            return JSONResponse(
+                status_code=400,
+                content={"message": "Invalid email or password"}
+            )
 
         if not verify_password(user.password, db_user["password"]):
-            raise HTTPException(status_code=400, detail="Invalid email or password")
+            return JSONResponse(
+                status_code=400,
+                content={"message": "Invalid email or password"}
+            )
 
         # SAFETY CHECK
         user_id = str(db_user.get("_id"))
@@ -60,4 +73,7 @@ def login(user: UserLogin):
         }
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        return JSONResponse(
+            status_code=500,
+            content={"message": f"Login error: {str(e)}"}
+        )

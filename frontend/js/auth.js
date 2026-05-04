@@ -6,20 +6,9 @@
   const toRegisterInline = document.getElementById("toRegisterInline");
   const toLoginInline = document.getElementById("toLoginInline");
   const authError = document.getElementById("authError");
-  const darkModeToggle = document.getElementById("darkModeToggle");
 
   if (!loginForm || !registerForm) {
     return;
-  }
-
-  EcoAPI.applySavedTheme();
-
-  if (darkModeToggle) {
-    darkModeToggle.textContent = document.body.classList.contains("dark") ? "☀️ Light Mode" : "🌙 Dark Mode";
-    darkModeToggle.addEventListener("click", () => {
-      const isDark = EcoAPI.toggleTheme();
-      darkModeToggle.textContent = isDark ? "☀️ Light Mode" : "🌙 Dark Mode";
-    });
   }
 
   if (EcoAPI.getToken()) {

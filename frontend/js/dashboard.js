@@ -1,12 +1,11 @@
 /*
  * EcoTrack Dashboard Logic
- * - Fetches latest and historical emission data.
+ * - Fetches latest and historical emission data from user account only
  * - Renders summary cards, pie/line charts, suggestions, and CSV export.
  */
 
 (function dashboardModule() {
   const USER_PROFILE_KEY = "ecotrack_user";
-  const SEEDED_HISTORY_KEY = "ecotrack_seeded_history";
 
   const token = EcoAPI.getToken();
   if (!token) {
@@ -14,11 +13,8 @@
     return;
   }
 
-  EcoAPI.applySavedTheme();
-
   const userNameEl = document.getElementById("userName");
   const logoutBtn = document.getElementById("logoutBtn");
-  const darkModeToggle = document.getElementById("darkModeToggle");
   const emissionForm = document.getElementById("emissionForm");
   const formMessage = document.getElementById("formMessage");
   const suggestionsPanel = document.getElementById("suggestionsPanel");
@@ -158,114 +154,6 @@
     return suggestions;
   }
 
-  function randomBetween(min, max, digits = 0) {
-    const value = Math.random() * (max - min) + min;
-    return Number(value.toFixed(digits));
-  }
-
-  function getLastSixMonths() {
-    const labels = [];
-    const now = new Date();
-
-    for (let offset = 5; offset >= 0; offset -= 1) {
-      const date = new Date(now.getFullYear(), now.getMonth() - offset, 1);
-      labels.push(`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`);
-    }
-
-    return labels;
-  }
-
-  function createSeedHistory() {
-    const months = getLastSixMonths();
-    const profiles = [
-      {
-        type: "general",
-        transport: [55, 95],
-        electricity: [95, 155],
-        lpg: [6, 14],
-        flight: [0, 30]
-      },
-      {
-        type: "normal",
-        transport: [95, 140],
-        electricity: [150, 220],
-        lpg: [10, 22],
-        flight: [10, 60]
-      },
-      {
-        type: "general",
-        transport: [45, 85],
-        electricity: [80, 135],
-        lpg: [5, 12],
-        flight: [0, 25]
-      },
-      {
-        type: "worst",
-        transport: [220, 360],
-        electricity: [320, 520],
-        lpg: [28, 52],
-        flight: [180, 520]
-      },
-      {
-        type: "normal",
-        transport: [110, 165],
-        electricity: [160, 240],
-        lpg: [12, 26],
-        flight: [15, 75]
-      },
-      {
-        type: "general",
-        transport: [60, 100],
-        electricity: [90, 150],
-        lpg: [6, 15],
-        flight: [0, 35]
-      }
-    ];
-
-    return months.map((month, index) => {
-      const profile = profiles[index];
-      const calculated_emissions = {
-        transport: randomBetween(profile.transport[0], profile.transport[1], 2),
-        electricity: randomBetween(profile.electricity[0], profile.electricity[1], 2),
-        lpg: randomBetween(profile.lpg[0], profile.lpg[1], 2),
-        flight: randomBetween(profile.flight[0], profile.flight[1], 2)
-      };
-
-      return {
-        month,
-        profile: profile.type,
-        transport: calculated_emissions.transport,
-        electricity: calculated_emissions.electricity,
-        lpg: calculated_emissions.lpg,
-        flight: calculated_emissions.flight,
-        total: Number(
-          (
-            calculated_emissions.transport +
-            calculated_emissions.electricity +
-            calculated_emissions.lpg +
-            calculated_emissions.flight
-          ).toFixed(2)
-        ),
-        calculated_emissions
-      };
-    });
-  }
-
-  function getSeedHistory() {
-    try {
-      const stored = JSON.parse(localStorage.getItem(SEEDED_HISTORY_KEY) || "null");
-      if (Array.isArray(stored) && stored.length === 6) {
-        return stored;
-      }
-    } catch (error) {
-      // Ignore malformed seed data and regenerate it.
-    }
-
-    const seed = createSeedHistory();
-    localStorage.setItem(SEEDED_HISTORY_KEY, JSON.stringify(seed));
-    return seed;
-  }
-
   /** Formats number as rounded kg text. */
   function asKg(value) {
     const num = Number(value || 0);
@@ -334,7 +222,9 @@
   async function fetchLatestEmission() {
     try {
       const response = await EcoAPI.authorizedFetch("/api/emission/latest");
+      
       if (response.status === 404) {
+        // No emission data recorded yet - show empty state
         applyLatestToUI({ transport: 0, electricity: 0, lpg: 0, flight: 0, total: 0 }, []);
         return;
       }
@@ -344,16 +234,11 @@
       }
 
       const payload = await response.json();
-      if (!payload.emission) {
-        const seedLatest = getSeedHistory().slice(-1)[0];
-        applyLatestToUI(seedLatest, buildSuggestionsFromEmission(seedLatest));
-        return;
-      }
-
       applyLatestToUI(payload.emission || {}, payload.suggestions || []);
     } catch (error) {
-      const seedLatest = getSeedHistory().slice(-1)[0];
-      applyLatestToUI(seedLatest, buildSuggestionsFromEmission(seedLatest));
+      console.error("Error fetching latest emission:", error);
+      EcoAPI.showToast("Error loading emission data. Please refresh.", "error");
+      applyLatestToUI({ transport: 0, electricity: 0, lpg: 0, flight: 0, total: 0 }, []);
     }
   }
 
@@ -361,16 +246,19 @@
   async function fetchHistory() {
     try {
       const response = await EcoAPI.authorizedFetch("/api/emission/history?limit=100");
+      
       if (!response.ok) {
         throw new Error("Failed to fetch emission history.");
       }
 
       const payload = await response.json();
-      cachedHistory = Array.isArray(payload.emissions) && payload.emissions.length ? payload.emissions : getSeedHistory();
+      cachedHistory = Array.isArray(payload.emissions) && payload.emissions.length ? payload.emissions : [];
       renderLineChart(cachedHistory);
     } catch (error) {
-      cachedHistory = getSeedHistory();
-      renderLineChart(cachedHistory);
+      console.error("Error fetching history:", error);
+      EcoAPI.showToast("Error loading emission history.", "error");
+      cachedHistory = [];
+      renderLineChart([]);
     }
   }
 
@@ -496,8 +384,9 @@
     suggestionsPanel.innerHTML = "";
     cards.forEach((tip) => {
       const card = document.createElement("article");
-      card.className = "suggestion-card";
-      card.innerHTML = `<h4>${tip.category.toUpperCase()} · ${tip.priority}</h4><p>${tip.message}</p>`;
+      const priorityClass = `priority-${String(tip.priority || "low").toLowerCase()}`;
+      card.className = `suggestion-card ${priorityClass}`;
+      card.innerHTML = `<h4>${tip.category.toUpperCase()} · <span class="priority-label ${priorityClass}">${tip.priority}</span></h4><p>${tip.message}</p>`;
       suggestionsPanel.appendChild(card);
     });
   }
@@ -610,15 +499,6 @@
       window.location.href = "index.html";
     });
 
-    darkModeToggle.addEventListener("click", () => {
-      const isDark = EcoAPI.toggleTheme();
-      darkModeToggle.innerHTML = isDark ? '<i class="ph ph-sun"></i> Light Theme' : '<i class="ph ph-moon"></i> Dark Theme';
-    });
-
-    if (document.body.classList.contains("dark")) {
-      darkModeToggle.innerHTML = '<i class="ph ph-sun"></i> Light Theme';
-    }
-
     emissionForm.addEventListener("submit", handleEmissionSubmit);
     downloadCsvBtn.addEventListener("click", downloadCsv);
 
@@ -626,10 +506,8 @@
     try {
       await Promise.all([fetchLatestEmission(), fetchHistory()]);
     } catch (error) {
-      cachedHistory = getSeedHistory();
-      renderLineChart(cachedHistory);
-      const seedLatest = cachedHistory.slice(-1)[0];
-      applyLatestToUI(seedLatest, buildSuggestionsFromEmission(seedLatest));
+      console.error("Error initializing dashboard:", error);
+      EcoAPI.showToast("Error loading dashboard data.", "error");
     } finally {
       EcoAPI.setLoading(false);
     }
